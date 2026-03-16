@@ -54,12 +54,14 @@ class DocTypeClassifier(BaseClassifier):
             raw_text = t.get("text", "")
             norm_text = TextNormalizer.normalize(raw_text)
 
-            result.append({
-                "raw": raw_text,
-                "norm": norm_text,
-                "label": t.get("label"),
-                "prov": t.get("prov", []),
-            })
+            result.append(
+                {
+                    "raw": raw_text,
+                    "norm": norm_text,
+                    "label": t.get("label"),
+                    "prov": t.get("prov", []),
+                }
+            )
 
         return result
 
@@ -95,9 +97,7 @@ class DocTypeClassifier(BaseClassifier):
                     )
                 else:
                     scores[doc_type] += 6
-                    reasons[doc_type].append(
-                        f'title exact match: "{t["raw"]}"'
-                    )
+                    reasons[doc_type].append(f'title exact match: "{t["raw"]}"')
 
     def _apply_text_contains_rule(
         self,
@@ -113,9 +113,7 @@ class DocTypeClassifier(BaseClassifier):
             for keyword in candidates:
                 if keyword in t["norm"]:
                     scores[doc_type] += 2
-                    reasons[doc_type].append(
-                        f'text contains "{keyword}": "{t["raw"]}"'
-                    )
+                    reasons[doc_type].append(f'text contains "{keyword}": "{t["raw"]}"')
 
     def _apply_meta_fields_rule(
         self,
@@ -131,9 +129,7 @@ class DocTypeClassifier(BaseClassifier):
             for field_name in candidates:
                 if field_name in t["norm"]:
                     scores[doc_type] += 3
-                    reasons[doc_type].append(
-                        f'meta field "{field_name}": "{t["raw"]}"'
-                    )
+                    reasons[doc_type].append(f'meta field "{field_name}": "{t["raw"]}"')
 
     def _apply_table_headers_rule(
         self,
@@ -149,6 +145,4 @@ class DocTypeClassifier(BaseClassifier):
             for header in candidates:
                 if header in cell_text:
                     scores[doc_type] += 2
-                    reasons[doc_type].append(
-                        f'table header "{header}": "{cell_text}"'
-                    )
+                    reasons[doc_type].append(f'table header "{header}": "{cell_text}"')

@@ -23,6 +23,9 @@ class ParserFactory:
         document_type: str | None = None,
         vendor: str | None = None,
     ) -> BaseDocumentParser:
+
+
+        if document_type == "quotation":
         document_type = document_type or "invoice"
         if document_type == "invoice":
             return self._build_invoice_parser(vendor=vendor)
