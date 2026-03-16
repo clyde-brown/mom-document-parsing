@@ -11,6 +11,10 @@ __pycache__/
 dist/
 build/
 
+# Sample / data (do not commit)
+0_doc_samples/
+1_quotation_sample/
+
 # IDE
 .idea/
 .vscode/
