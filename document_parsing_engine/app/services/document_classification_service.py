@@ -1,12 +1,16 @@
-"""문서 분류: doc + hint(document_type) → document_type 반환."""
+"""문서 분류 서비스. Docling Parser에 의존한다 (doc_dict는 Docling export_to_dict() 형식)."""
+
+from document_parsing_engine.domain.classifiers.doc_type_classifier import DocTypeClassifier
+from document_parsing_engine.domain.models.classification import ClassificationResult
 
 
 class DocumentClassificationService:
-    def __init__(self, default_document_type: str = "invoice"):
-        self.default_document_type = default_document_type
+    """Docling Parser에 의존: doc_dict는 Docling의 export_to_dict() 형식이어야 함."""
 
-    def classify(self, doc: dict, document_type_hint: str | None = None) -> str:
-        """문서와 선택적 힌트를 받아 document_type 문자열 반환. MVP에서는 힌트 우선."""
-        if document_type_hint:
-            return document_type_hint
-        return self.default_document_type
+    def __init__(self):
+        self.doc_type_classifier = DocTypeClassifier()
+
+    def classify(self, doc_dict: dict) -> ClassificationResult:
+        """Docling export_to_dict() 형식의 doc_dict를 분류. BaseClassifier API와 동일."""
+        return self.doc_type_classifier.classify(doc_dict)
+

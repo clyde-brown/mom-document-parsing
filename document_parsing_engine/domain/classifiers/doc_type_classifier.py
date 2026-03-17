@@ -3,7 +3,10 @@ from typing import Dict, List
 
 from document_parsing_engine.domain.classifiers.base import BaseClassifier
 from document_parsing_engine.domain.classifiers.rules import DOC_TYPE_RULES
-from document_parsing_engine.domain.models.classification import ClassificationResult
+from document_parsing_engine.domain.models.classification import (
+    ClassificationResult,
+    DocType,
+)
 from document_parsing_engine.utils.text import TextNormalizer
 
 
@@ -23,7 +26,7 @@ class DocTypeClassifier(BaseClassifier):
 
         if not scores:
             return ClassificationResult(
-                doc_type="unknown",
+                doc_type=DocType.UNKNOWN,
                 score=0,
                 reasons=[],
                 all_scores={},
@@ -34,14 +37,14 @@ class DocTypeClassifier(BaseClassifier):
 
         if best_score <= 0:
             return ClassificationResult(
-                doc_type="unknown",
+                doc_type=DocType.UNKNOWN,
                 score=0,
                 reasons=[],
                 all_scores=dict(scores),
             )
 
         return ClassificationResult(
-            doc_type=best_doc_type,
+            doc_type=DocType(best_doc_type),
             score=best_score,
             reasons=reasons[best_doc_type],
             all_scores=dict(scores),
