@@ -6,7 +6,4 @@ def get_table_rows(table_obj: dict) -> list[list[str]]:
     table_obj["data"]["grid"]에서 행별 셀 텍스트 리스트 반환.
     """
     grid = (table_obj.get("data") or {}).get("grid", [])
-    return [
-        [(cell.get("text") or "").strip() for cell in row]
-        for row in grid
-    ]
+    return [[(cell.get("text") or "").strip() for cell in row] for row in grid]

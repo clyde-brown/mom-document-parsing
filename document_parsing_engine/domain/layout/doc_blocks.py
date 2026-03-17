@@ -11,9 +11,7 @@ def get_blocks_sorted(doc: dict) -> list[tuple[str, dict]]:
     """
     result: list[tuple[str, dict]] = []
 
-    children = (
-        doc.get("body") or doc.get("content") or {}
-    ).get("children", [])
+    children = (doc.get("body") or doc.get("content") or {}).get("children", [])
 
     if children:
         for child in children:

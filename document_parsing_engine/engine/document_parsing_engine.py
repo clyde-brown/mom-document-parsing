@@ -2,6 +2,7 @@
 
 
 from document_parsing_engine.app.services import DocumentClassificationService
+from document_parsing_engine.app.services import DocumentLayoutParsingService
 from document_parsing_engine.loaders.docling_loader import DoclingLoader
 
 
@@ -9,7 +10,7 @@ class DocumentParsingEngine:
     def __init__(self):
         self.loader = DoclingLoader()
         self.classifier = DocumentClassificationService()
-        layout_parser = DocumentLayoutParsingService()
+        self.layout_parser = DocumentLayoutParsingService()
 
     def process(self, file_path: str):
         # 1. 문서 읽기
@@ -19,11 +20,9 @@ class DocumentParsingEngine:
         classification = self.classifier.classify_doc_type(doc_dict)
 
         # 3. layout parsing
-        layout_parser = DocumentLayoutParsingService()
-        blocks = layout_parser.parse_layout(doc_dict)
+        blocks = self.layout_parser.parse_layout(doc_dict)
 
-
-        # 3. segmentation
+        # 4. segmentation
         # segmenter = get_segmenter(classification.doc_type)
         # segments = segmenter.segment(doc_dict)
 
