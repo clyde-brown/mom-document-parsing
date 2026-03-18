@@ -118,3 +118,69 @@ class LayoutSegmentMappingService:
                 )
             )
         return normalized
+
+    @staticmethod
+    def _seg_str(x: Any) -> str | None:
+        if x is None:
+            return None
+        return x.value if hasattr(x, "value") else str(x)
+
+    @staticmethod
+    def _print_block_content(blk: BlockContent | None) -> None:
+        """content_type에 따라 블록 내용 출력: text는 그대로, group_kv는 dict 한 줄씩, table은 전부."""
+        if blk is None or getattr(blk, "content", None) is None:
+            print("      (내용 없음)")
+            return
+        ct = getattr(blk, "content_type", "")
+        content = blk.content
+        if ct == "text":
+            print(f"      {content}")
+        elif ct == "group_kv" and isinstance(content, dict):
+            for k, v in content.items():
+                print(f"      {k}: {v}")
+        elif ct == "table" and isinstance(content, list):
+            for row in content:
+                if isinstance(row, list):
+                    print("      ", row)
+                else:
+                    print("      ", row)
+        else:
+            print(f"      {content}")
+
+    def pretty_print(
+        self,
+        result: LayoutSegmentMappingRecommendation,
+        blocks: list[BlockContent],
+    ) -> None:
+        """세그먼트별로 출력(segment_buckets 기준) + block별 실제 텍스트."""
+        blocks_by_ref = {
+            getattr(b, "ref", None): b for b in blocks if getattr(b, "ref", None)
+        }
+        for bucket in result.segment_buckets:
+            seg = getattr(bucket, "segment_type", None) or getattr(
+                bucket, "segment_name", None
+            )
+            seg_str = self._seg_str(seg)
+            print(f"=== segment: {seg_str} ===")
+            print(f"  block_refs: {bucket.block_refs}")
+            if bucket.reasons:
+                print(
+                    f"  reasons: {bucket.reasons[:3]}{'...' if len(bucket.reasons) > 3 else ''}"
+                )
+            for r in result.block_recommendations:
+                r_primary = getattr(r, "primary_segment", None)
+                if self._seg_str(r_primary) == seg_str:
+                    print(
+                        f"    - {r.block_ref} | label={r.label} | content_type={r.content_type}"
+                    )
+                    self._print_block_content(blocks_by_ref.get(r.block_ref))
+            print()
+
+        if result.unmapped_block_refs:
+            print("=== unmapped (미매핑) ===")
+            print(f"  block_refs: {result.unmapped_block_refs}")
+            for ref in result.unmapped_block_refs:
+                blk = blocks_by_ref.get(ref)
+                if blk:
+                    print(f"    - {ref}:")
+                    self._print_block_content(blk)

@@ -168,7 +168,7 @@ QUOTATION_SEGMENT_DEFINITION = DocumentSegmentDefinition(
                             name="material_grade",
                             description="재질",
                             keyword_def=FieldKeywordDefinition(
-                                keywords=("재질", "grade", "material"),
+                                keywords=("재질", "grade", "material", "description"),
                                 boost_score=0.06,
                             ),
                         ),
@@ -192,7 +192,7 @@ QUOTATION_SEGMENT_DEFINITION = DocumentSegmentDefinition(
                             name="spec_text",
                             description="규격/스펙 원문",
                             keyword_def=FieldKeywordDefinition(
-                                keywords=("규격", "spec", "maker", "메이커"),
+                                keywords=("규격", "spec", "maker", "메이커", "description","material"),
                                 boost_score=0.06,
                             ),
                         ),
@@ -380,3 +380,16 @@ PURCHASE_ORDER_SEGMENT_DEFINITION = DocumentSegmentDefinition(
         ),
     ),
 )
+
+
+def get_segment_definition(doc_type: str) -> DocumentSegmentDefinition:
+    """doc_type(예: classification_result.doc_type.value)에 맞는 세그먼트 정의를 반환한다."""
+    doc_type_lower = (doc_type or "").strip().lower()
+    for definition in (QUOTATION_SEGMENT_DEFINITION, PURCHASE_ORDER_SEGMENT_DEFINITION):
+        if definition.doc_type.lower() == doc_type_lower:
+            return definition
+        if doc_type_lower in (a.lower() for a in definition.aliases):
+            return definition
+    raise KeyError(
+        f"Unknown doc_type: {doc_type!r}. Supported: quotation, purchase_order (and aliases)."
+    )
