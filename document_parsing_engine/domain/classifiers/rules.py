@@ -1,5 +1,10 @@
 """doc_type별 대표 신호 정의."""
 
+"""
+추후 DB에서 값을 가져오도록 수정할 예정. -> 동적으로 업데이트 가능
+"""
+
+
 DOC_TYPE_RULES = {
     "quotation": {
         "title_exact": [

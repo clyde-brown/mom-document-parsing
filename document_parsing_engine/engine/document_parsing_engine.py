@@ -1,9 +1,17 @@
-"""최상위 façade: parser_factory로 parser를 얻어 parse 위임."""
+"""최상위 façade: loader → classifier → layout → segment mapping."""
 
-
-from document_parsing_engine.app.services import DocumentClassificationService
-from document_parsing_engine.app.services import DocumentLayoutParsingService
+from document_parsing_engine.app.services import (
+    DocumentClassificationService,
+    DocumentLayoutParsingService,
+    LayoutSegmentMappingService,
+)
 from document_parsing_engine.loaders.docling_loader import DoclingLoader
+
+
+def _doc_type_str(doc_type):
+    if hasattr(doc_type, "value"):
+        return str(doc_type.value)
+    return str(doc_type)
 
 
 class DocumentParsingEngine:
@@ -11,9 +19,10 @@ class DocumentParsingEngine:
         self.loader = DoclingLoader()
         self.classifier = DocumentClassificationService()
         self.layout_parser = DocumentLayoutParsingService()
+        self.segment_mapping = LayoutSegmentMappingService()
 
     def process(self, file_path: str):
-        # 1. 문서 읽기
+        ## 1. 문서 읽기 (DoclingParser)
         doc_dict = self.loader.load(file_path)
 
         # 2. 문서 타입 분류
@@ -22,18 +31,18 @@ class DocumentParsingEngine:
         # 3. layout parsing
         blocks = self.layout_parser.parse_layout(doc_dict)
 
-        # 4. segmentation
-        # segmenter = get_segmenter(classification.doc_type)
-        # segments = segmenter.segment(doc_dict)
-
-        # 4. extraction
-        # extractor = get_extractor(classification.doc_type)
-        # fields = extractor.extract(segments)
+        # 4. segment mapping (철감문서 도메인 별 허용 segment 집합 추천)
+        segment_result = self.segment_mapping.recommend(
+            doc_type=classification.doc_type.value,
+            doc_dict=doc_dict,
+            blocks=blocks,
+        )
 
         return {
             "doc_type": classification.doc_type,
             "score": classification.score,
             "reasons": classification.reasons,
+            "segment_mapping": segment_result,
         }
 
 

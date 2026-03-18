@@ -9,6 +9,7 @@ __all__ = [
     "BlockContent",
     "DocumentClassificationService",
     "DocumentLayoutParsingService",
+    "LayoutSegmentMappingService",
     "SectionParsingService",
     "NormalizationService",
     "ValidationService",
@@ -16,7 +17,7 @@ __all__ = [
 
 
 def __getattr__(name: str):
-    """Layout 파싱 서비스는 지연 로딩. 캐시된 패키지에서도 최신 모듈을 불러옴."""
+    """Layout/segment 매핑 서비스는 지연 로딩."""
     if name == "DocumentLayoutParsingService":
         from document_parsing_engine.app.services.document_layout_parsing_service import (
             DocumentLayoutParsingService,
@@ -27,4 +28,9 @@ def __getattr__(name: str):
             BlockContent,
         )
         return BlockContent
+    if name == "LayoutSegmentMappingService":
+        from document_parsing_engine.app.services.layout_segment_mapping_service import (
+            LayoutSegmentMappingService,
+        )
+        return LayoutSegmentMappingService
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
