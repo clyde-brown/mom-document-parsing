@@ -168,7 +168,7 @@ QUOTATION_SEGMENT_DEFINITION = DocumentSegmentDefinition(
                             name="material_grade",
                             description="재질",
                             keyword_def=FieldKeywordDefinition(
-                                keywords=("재질", "grade", "material", "description"),
+                                keywords=("재질", "grade", "material"),
                                 boost_score=0.06,
                             ),
                         ),
