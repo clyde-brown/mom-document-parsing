@@ -32,7 +32,9 @@ class SegmentBucket:
 class LayoutSegmentMappingRecommendation:
     doc_type: str
     allowed_segments: list[str]
-    block_recommendations: list[BlockSegmentRecommendation] = field(default_factory=list)
+    block_recommendations: list[BlockSegmentRecommendation] = field(
+        default_factory=list
+    )
     segment_buckets: list[SegmentBucket] = field(default_factory=list)
     unmapped_block_refs: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)

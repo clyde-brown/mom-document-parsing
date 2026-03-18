@@ -7,7 +7,9 @@ from __future__ import annotations
 
 from typing import Any
 
-from document_parsing_engine.app.services.document_layout_parsing_service import BlockContent
+from document_parsing_engine.app.services.document_layout_parsing_service import (
+    BlockContent,
+)
 from document_parsing_engine.domain.models.segment_mapping_result import (
     LayoutSegmentMappingRecommendation,
 )
@@ -89,20 +91,28 @@ class LayoutSegmentMappingService:
                 content = content.strip()
             elif isinstance(content, dict):
                 content = {
-                    ("" if k is None else str(k).strip()): ("" if v is None else str(v).strip())
+                    ("" if k is None else str(k).strip()): (
+                        "" if v is None else str(v).strip()
+                    )
                     for k, v in content.items()
                 }
             elif isinstance(content, list):
                 content = [
-                    ["" if c is None else str(c).strip() for c in row]
-                    if isinstance(row, list)
-                    else ("" if row is None else str(row).strip())
+                    (
+                        ["" if c is None else str(c).strip() for c in row]
+                        if isinstance(row, list)
+                        else ("" if row is None else str(row).strip())
+                    )
                     for row in content
                 ]
             normalized.append(
                 BlockContent(
                     ref=block.ref.strip(),
-                    label=block.label.strip() if isinstance(block.label, str) else block.label,
+                    label=(
+                        block.label.strip()
+                        if isinstance(block.label, str)
+                        else block.label
+                    ),
                     content_type=block.content_type.strip(),
                     content=content,
                 )

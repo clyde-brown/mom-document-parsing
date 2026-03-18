@@ -44,7 +44,9 @@ def build_segment_keyword_bundle(
                     field_keywords.append(
                         (str(keyword).strip(), float(field_def.keyword_def.boost_score))
                     )
-        segment_boost = float(segment.metadata.get("segment_keyword_boost_score", 0.0) or 0.0)
+        segment_boost = float(
+            segment.metadata.get("segment_keyword_boost_score", 0.0) or 0.0
+        )
         segment_keywords = [
             (str(k).strip(), segment_boost)
             for k in segment.metadata.get("segment_keywords", ())
