@@ -29,7 +29,7 @@ class DocumentParsingEngine:
         doc_dict = self.loader.load(file_path)
 
         # 2. 문서 타입 분류
-        classification = self.classifier.classify_doc_type(doc_dict)
+        classification = self.classifier.classify(doc_dict)
 
         # 3. layout parsing
         blocks = self.layout_parser.parse_layout(doc_dict)
