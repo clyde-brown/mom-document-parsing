@@ -1,11 +1,14 @@
 from document_parsing_engine.app.services.document_classification_service import (
     DocumentClassificationService,
 )
-from document_parsing_engine.app.services.section_parsing_service import (
-    SectionParsingService,
+from document_parsing_engine.app.services.field_mapping_service import (
+    FieldMappingService,
 )
 from document_parsing_engine.app.services.normalization_service import (
     NormalizationService,
+)
+from document_parsing_engine.app.services.section_parsing_service import (
+    SectionParsingService,
 )
 from document_parsing_engine.app.services.validation_service import ValidationService
 
@@ -13,7 +16,7 @@ __all__ = [
     "BlockContent",
     "DocumentClassificationService",
     "DocumentLayoutParsingService",
-    "LayoutSegmentMappingService",
+    "FieldMappingService",
     "SectionParsingService",
     "NormalizationService",
     "ValidationService",
@@ -21,7 +24,7 @@ __all__ = [
 
 
 def __getattr__(name: str):
-    """Layout/segment 매핑 서비스는 지연 로딩."""
+    """Layout/segment/field_mapping 서비스는 지연 로딩."""
     if name == "DocumentLayoutParsingService":
         from document_parsing_engine.app.services.document_layout_parsing_service import (
             DocumentLayoutParsingService,

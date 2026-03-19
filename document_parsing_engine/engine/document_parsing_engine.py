@@ -3,7 +3,9 @@
 from document_parsing_engine.app.services import (
     DocumentClassificationService,
     DocumentLayoutParsingService,
+    FieldMappingService,
     LayoutSegmentMappingService,
+    FieldMappingService
 )
 from document_parsing_engine.loaders.docling_loader import DoclingLoader
 
@@ -19,7 +21,8 @@ class DocumentParsingEngine:
         self.loader = DoclingLoader()
         self.classifier = DocumentClassificationService()
         self.layout_parser = DocumentLayoutParsingService()
-        self.segment_mapping = LayoutSegmentMappingService()
+        self.segment_mapper = LayoutSegmentMappingService()
+        self.field_mapper = FieldMappingService()
 
     def process(self, file_path: str):
         ## 1. 문서 읽기 (DoclingParser)
@@ -32,18 +35,20 @@ class DocumentParsingEngine:
         blocks = self.layout_parser.parse_layout(doc_dict)
 
         # 4. segment mapping (철감문서 도메인 별 허용 segment 집합 추천)
-        segment_result = self.segment_mapping.recommend(
+        segment_infos = self.segment_mapper.recommend(
             doc_type=classification.doc_type.value,
             doc_dict=doc_dict,
             blocks=blocks,
         )
 
-        return {
-            "doc_type": classification.doc_type,
-            "score": classification.score,
-            "reasons": classification.reasons,
-            "segment_mapping": segment_result,
-        }
+        # 5. field mapping
+        field_result = self.field_mapper.extract(classification.doc_type.value, segment_infos, blocks)
+
+        return field_result
+
+
+
+
 
 
 # class DocumentParsingEngine:
