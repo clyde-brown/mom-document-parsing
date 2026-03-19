@@ -7,6 +7,7 @@ from document_parsing_engine.app.services import (
     LayoutSegmentMappingService,
     FieldMappingService
 )
+from document_parsing_engine.app.services.segment_reconstruction_service import SegmentReconstructionService
 from document_parsing_engine.loaders.docling_loader import DoclingLoader
 
 
@@ -22,6 +23,7 @@ class DocumentParsingEngine:
         self.classifier = DocumentClassificationService()
         self.layout_parser = DocumentLayoutParsingService()
         self.segment_mapper = LayoutSegmentMappingService()
+        self.segment_reconstructor = SegmentReconstructionService()
         self.field_mapper = FieldMappingService()
 
     def process(self, file_path: str):
@@ -41,7 +43,10 @@ class DocumentParsingEngine:
             blocks=blocks,
         )
 
-        # 5. field mapping
+        # 5. segment reconstruction
+        segment_infos, blocks = self.segment_reconstructor.reconstruct(segment_infos, blocks)
+
+        # 6. field mapping
         field_result = self.field_mapper.extract(classification.doc_type.value, segment_infos, blocks)
 
         return field_result

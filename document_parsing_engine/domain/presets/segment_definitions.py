@@ -35,7 +35,7 @@ QUOTATION_SEGMENT_DEFINITION = DocumentSegmentDefinition(
                     name="supplier_name",
                     description="공급업체 상호",
                     keyword_def=FieldKeywordDefinition(
-                        keywords=("공급업체", "supplier", "판매처", "상호", "회사명"),
+                        keywords=("공급업체", "supplier", "판매처", "상호", "회사명","company name", "company"),
                         boost_score=0.05,
                     ),
                 ),
@@ -43,7 +43,7 @@ QUOTATION_SEGMENT_DEFINITION = DocumentSegmentDefinition(
                     name="supplier_contact_person",
                     description="공급업체 담당자명",
                     keyword_def=FieldKeywordDefinition(
-                        keywords=("담당자", "작성자", "contact person"),
+                        keywords=("담당자", "작성자", "수신", "contact person", "sales rep."),
                         boost_score=0.04,
                     ),
                 ),
@@ -67,7 +67,7 @@ QUOTATION_SEGMENT_DEFINITION = DocumentSegmentDefinition(
                     name="buyer_name",
                     description="고객사 상호",
                     keyword_def=FieldKeywordDefinition(
-                        keywords=("수신", "귀중", "貴中", "buyer", "고객사"),
+                        keywords=("수신", "귀중", "貴中", "buyer", "고객사", "company", "to"),
                         boost_score=0.05,
                     ),
                 ),
@@ -75,7 +75,7 @@ QUOTATION_SEGMENT_DEFINITION = DocumentSegmentDefinition(
                     name="buyer_contact_person",
                     description="고객사 담당자명",
                     keyword_def=FieldKeywordDefinition(
-                        keywords=("수신", "참조", "담당자"),
+                        keywords=("수신", "참조", "담당자","Reference"),
                         boost_score=0.04,
                     ),
                 ),
@@ -83,7 +83,7 @@ QUOTATION_SEGMENT_DEFINITION = DocumentSegmentDefinition(
                     name="buyer_phone",
                     description="고객사 연락처",
                     keyword_def=FieldKeywordDefinition(
-                        keywords=("tel", "전화", "연락처"),
+                        keywords=("tel", "전화", "연락처", "tel."),
                         boost_score=0.03,
                     ),
                 ),
@@ -237,9 +237,9 @@ QUOTATION_SEGMENT_DEFINITION = DocumentSegmentDefinition(
             name="remarks",
             description="비고 및 자유 텍스트",
             metadata={
-                "segment_keywords": ("특기사항", "비고", "remarks", "remark", "note", "특이사항"),
+                "segment_keywords": ("특기사항", "비고", "remarks", "remark", "note", "특이사항","요청사항","필수요청사항","special request"),
                 "segment_keyword_boost_score": 0.12,
-                "title_keywords": ("특기사항", "비고", "remarks", "remark", "note", "특이사항"),
+                "title_keywords": ("특기사항", "비고", "remarks", "remark", "note", "특이사항","요청사항","필수요청사항","special request"),
                 "title_boost_score": 0.20,
                 "preferred_block_types": ("text", "group_kv"),
                 "preferred_labels": ("section_header", "list", "text"),

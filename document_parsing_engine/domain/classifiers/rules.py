@@ -11,6 +11,8 @@ DOC_TYPE_RULES = {
             "견적서",
             "見積書",
             "quotation",
+            "quote",
+            "q u o t e",
             "estimate",
         ],
         "text_contains": [

@@ -46,6 +46,23 @@ segment_field_extraction:
        - content_type == "text" 인 일반 텍스트
        - content_type == "group_kv" 인 key_value_area
     6. _unmapped의 내용은 quotation_meta 후보로 활용 가능하나, 확실한 경우만 채운다.
+    7. _unmapped에서 key와 value가 분리되어 있을 수 있다.
+       ':'가 포함된 텍스트는 key일 가능성이 높으므로,
+       의미가 맞아 보이는 value를 찾아 매핑하고, 확실한 경우에만 필드를 채운다.
+    8. _unmapped에 "단어1: 단어2" 형태의 key-value 구조가 있으면
+       quotation_meta일 가능성이 매우 높다. 확실한 경우에만 해당 필드를 채운다.
+    9. quotation_meta의 content가 이중 리스트([[],[],...])로 주어지는 경우가 있다.
+       다음 두 가지 중 맥락에 맞게 해석하여 필드를 채운다.
+       - 컬럼별 key-value: [[header1, header2, ...], [header1값, header2값, ...]]
+         → 첫 행을 헤더로 보고, 각 컬럼별 key-value로 해석.
+       - 행별 key-value 나열: [[key, value, key, value, ...], ...]
+         → 각 행을 key-value 쌍으로 읽어 매핑.
+       맥락(헤더 유무, 열 구조)을 보고 해석한 뒤, 확신 있는 경우에만 채운다.
+    10. quotation_meta에 사람 이름(한글/영문 이름)이 나오면 담당자(contact person)일 가능성이 높다.
+        파싱한 이름을 맥락에 맞게 supplier_contact_person 또는 buyer_contact_person 등 해당 필드에 채워 넣는다.
+    11. quotation_meta가 테이블(이중 리스트)이고 첫 행이 "견적의뢰정보", "의뢰자정보" 등 열 제목일 때:
+        견적의뢰정보(공급자 측) 열에 있는 수신·담당자·사람 이름은 supplier_contact_person에,
+        의뢰자정보(고객사 측) 열에 있는 수신·담당자·사람 이름은 buyer_contact_person에 맥락에 맞게 채워 넣는다.
 
     B. items 처리
     1. items 세그먼트는 주로 테이블이다.
@@ -114,7 +131,8 @@ segment_field_extraction:
     2. 동일 세그먼트 내 키워드 유사도
     3. 문맥상 명확한 패턴
     4. _unmapped 보완
-    5. 그래도 불확실하면 빈 값/null 유지
+    5. 못 채운 필드는 다른 세그먼트(items, remarks 등)에 있을 수 있으므로 검토하고, 어느 정도 확신이 드는 경우에만 채운다.
+    6. 그래도 불확실하면 빈 값/null 유지
 
   user: |
     아래 입력 데이터를 바탕으로 출력 템플릿과 동일한 구조의 JSON만 생성하라.
@@ -170,5 +188,7 @@ segment_field_extraction:
     2. items는 table의 첫 행을 헤더로 보고 컬럼명을 키워드와 비교하여 매핑하라.
     3. 품목 행이 아닌 합계/부가세/중간 텍스트 행은 rows에서 제외하라.
     4. _unmapped는 quotation_meta 보완에만 신중히 활용하라.
-    5. 확실하지 않으면 빈 문자열 또는 null로 두어라.
-    6. 반드시 JSON만 출력하라.
+    5. quotation_meta content가 이중 리스트이면 컬럼별/행별 key-value로 해석해 채우고, _unmapped의 key-value는 quotation_meta 후보로 활용하며, key와 value가 분리된 경우에도 의미가 맞으면 확신 있을 때만 채운다.
+    6. 못 채운 필드는 다른 세그먼트를 검토해 확신이 있을 때만 보완하라.
+    7. 확실하지 않으면 빈 문자열 또는 null로 두어라.
+    8. 반드시 JSON만 출력하라.
